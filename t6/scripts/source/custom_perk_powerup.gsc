@@ -23,6 +23,9 @@
 #include maps\mp\zombies\_zm_equipment;
 #include maps\mp\zombies\_zm_perk_vulture;
 
+#include maps\mp\gametypes_zm\_hud_util;
+#include maps\mp\gametypes_zm\_hud_message;
+
 init()
 {
 	level.background_shader = getdvarintdefault("enable_background", 1);
@@ -33,7 +36,7 @@ init()
     include_zombie_powerup("random_perk");
     add_zombie_powerup("random_perk", "t6_wpn_zmb_perk_bottle_sleight_world", &"ZOMBIE_POWERUP_RANDOM_PERK", ::func_should_always_drop, 0, 0, 0); 
     powerup_set_can_pick_up_in_last_stand("random_perk", 1);
-    precacheshaders = array("menu_zm_cac_grad_stretch","talkingicon","zombies_rank_5_ded","hud_grenadeicon","killiconheadshot","menu_mp_weapons_1911","hud_icon_sticky_grenade","faction_cdc","specialty_chugabud_zombies","specialty_electric_cherry_zombie","specialty_additionalprimaryweapon_zombies","menu_mp_lobby_icon_customgamemode","specialty_divetonuke_zombies","zombies_rank_1","zombies_rank_3","zombies_rank_2","zombies_rank_4","zombies_rank_5","menu_lobby_icon_facebook","menu_mp_weapons_1911","hud_icon_colt","waypoint_revive","hud_grenadeicon","damage_feedback","menu_lobby_icon_twitter","specialty_doubletap_zombies");
+    precacheshaders = array("menu_mp_weapons_lsat","menu_mp_weapons_1911", "menu_mp_weapons_kard","menu_mp_weapons_hamr","menu_mp_weapons_five_seven","menu_zm_cac_grad_stretch","talkingicon","menu_mp_weapons_dsr1","killiconheadshot","hud_icon_sticky_grenade","faction_cdc","specialty_chugabud_zombies","specialty_electric_cherry_zombie","specialty_additionalprimaryweapon_zombies","menu_mp_weapons_mp5","specialty_divetonuke_zombies","menu_mp_weapons_m82a","menu_mp_weapons_galil","menu_mp_weapons_fal","menu_mp_weapons_ak74u","zombies_rank_5","menu_lobby_icon_facebook","hud_icon_colt","menu_mp_weapons_870mcs","damage_feedback","menu_lobby_icon_twitter","specialty_doubletap_zombies");
     foreach(shader in precacheshaders)
     {
         precacheshader(shader);
@@ -122,21 +125,50 @@ onPlayerSpawned()
 	self.background_perk = [];
 	self.saved_perks = [];
 	self thread PlayerDownedWatcher();
-	//self thread test_the_powerup(); //spawn powerups 
+	// self thread test_the_powerup(); //spawn powerups 
+	self thread sellPowerUp(); //spawn powerups 
 }
 
-test_the_powerup()
+// test_the_powerup()
+// {
+// 	self endon("death");
+// 	self endon("disconnected");
+// 	level endon("end_Game");
+// 	wait 10;
+// 	self iprintlnbold("^7Press ^1[{+smoke}] ^7to test the power up.");
+// 	for(;;)
+// 	{
+// 		if(self secondaryoffhandbuttonpressed())
+// 		{
+// 			iprintln("Perk size: " + self.perkarray.size);
+// 			specific_powerup_drop("random_perk", self.origin + VectorScale(AnglesToForward(self.angles), 70));
+// 			wait 1;
+// 		}
+// 		wait .05;
+// 	}
+// }
+
+sellPowerUp()
 {
 	self endon("death");
 	self endon("disconnected");
 	level endon("end_Game");
-	wait 10;
-	self iprintlnbold("^7Press ^1[{+smoke}] ^7to test the power up.");
+
+	costPerPlayer = 2000;
+	totalCost = 2000;
+
+	self.perkText = createFontString("Objective" , 1.2);
+    self.perkText setPoint("CENTER", "TOP", 300, "CENTER");
+
 	for(;;)
 	{
-		if(self secondaryoffhandbuttonpressed())
+		totalCost = costPerPlayer * level.players.size;
+
+        self.perkText setText( "^7Press ^1[{+smoke}] + ^1[{+activate}] ^7to buy random perk. Cost: " + totalCost);
+
+		if(self secondaryoffhandbuttonpressed() && self usebuttonpressed() && self.score >= totalCost)
 		{
-			iprintln("Perk size: " + self.perkarray.size);
+			self.score -= totalCost;
 			specific_powerup_drop("random_perk", self.origin + VectorScale(AnglesToForward(self.angles), 70));
 			wait 1;
 		}
@@ -376,7 +408,7 @@ perk_hud_create( perk, custom, print )
 			{
 				self iprintln("^9Mule Kick");
 				wait 0.2;
-				self iprintln("This Perk enables additional primary weapon slot for player. ");
+				self iprintln("This Perk enables additional primary weapon slot for player, increases ads, weapon switching, grenade tossing and perk drinking.");
 			}
             break;
         case "PHD_FLOPPER":
@@ -386,7 +418,7 @@ perk_hud_create( perk, custom, print )
             }
             else
             {
-                shader = "hud_grenadeicon";
+                shader = "menu_mp_weapons_ak74u";
             }
             if(print)
 			{
@@ -396,7 +428,7 @@ perk_hud_create( perk, custom, print )
 			}
             break;
         case "Ethereal_Razor":
-            shader = "zombies_rank_4";
+            shader = "menu_mp_weapons_five_seven";
             self thread start_er();
             if(print)
 			{
@@ -406,7 +438,14 @@ perk_hud_create( perk, custom, print )
         	}
             break;
         case "Ammo_Regen":
-            shader = "menu_mp_lobby_icon_customgamemode";
+			if(getdvar( "ui_zm_mapstartlocation" ) == "prison")
+            {
+                shader = "menu_mp_weapons_lsat";
+            }
+            else
+            {
+				shader = "menu_mp_weapons_kard";
+            }
             self thread ammoregen();
             self thread grenadesregen();
             if(print)
@@ -417,7 +456,7 @@ perk_hud_create( perk, custom, print )
 			}
             break;
         case "Dying_Wish":
-            shader = "zombies_rank_5_ded";
+            shader = "menu_mp_weapons_dsr1";
             self thread dying_wish_checker();
             if(print)
 			{
@@ -429,7 +468,7 @@ perk_hud_create( perk, custom, print )
 			}
             break;
         case "Downers_Delight":
-            shader = "waypoint_revive";
+            shader = "menu_mp_weapons_870mcs";
             self thread DDown();
             if(print)
 			{
@@ -439,7 +478,7 @@ perk_hud_create( perk, custom, print )
 			}
             break;
         case "Victorious_Tortoise":
-            shader = "zombies_rank_2";
+            shader = "menu_mp_weapons_fal";
             if(print)
 			{
 				self iprintln("^9Victorious Tortoise");
@@ -448,7 +487,7 @@ perk_hud_create( perk, custom, print )
         	}
             break;
         case "ELECTRIC_CHERRY":
-            shader = "zombies_rank_5";
+            shader = "menu_mp_weapons_mp5";
             self thread start_ec();
             if(print)
 			{
@@ -458,7 +497,7 @@ perk_hud_create( perk, custom, print )
         	}
             break;
         case "WIDOWS_WINE":
-            shader = "zombies_rank_3";
+            shader = "menu_mp_weapons_galil";
             self thread ww_nades();
             if(print)
 			{
@@ -468,7 +507,7 @@ perk_hud_create( perk, custom, print )
         	}
             break;
         case "Burn_Heart":
-            shader = "zombies_rank_1";
+            shader = "menu_mp_weapons_m82a";
             self.ignore_lava_damage = 1;
             if(print)
 			{
@@ -478,7 +517,7 @@ perk_hud_create( perk, custom, print )
 			}
             break;
         case "deadshot":
-            shader = "killiconheadshot";
+            shader = "menu_mp_weapons_hamr";
             self thread AimAssist();
             if(print)
 			{
@@ -900,7 +939,7 @@ damage_callback( einflictor, eattacker, idamage, idflags, smeansofdeath, sweapon
 custom_get_player_weapon_limit( player )
 {
     weapon_limit = 3;
-    if( player hascustomperk("MULE"))
+    if( player hascustomperk("MULE") || self HasPerk("specialty_additionalprimaryweapon"))
     {
         self SetPerk("specialty_fastads");
 		self SetPerk("specialty_fastweaponswitch");
@@ -908,12 +947,9 @@ custom_get_player_weapon_limit( player )
     }
 	else 
 	{
-		if(!self HasPerk("specialty_additionalprimaryweapon"))
-		{
-			self UnsetPerk("specialty_fastads");
-			self UnsetPerk("specialty_fastweaponswitch");
-			self Unsetperk("specialty_fasttoss");
-		}
+		self UnsetPerk("specialty_fastads");
+		self UnsetPerk("specialty_fastweaponswitch");
+		self Unsetperk("specialty_fasttoss");
 	}
     return weapon_limit;
 }
