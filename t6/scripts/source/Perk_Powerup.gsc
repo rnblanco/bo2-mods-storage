@@ -45,8 +45,6 @@ init()
 	level.zombie_last_stand = ::LastStand;
     level.effect_WebFX = loadfx("misc/fx_zombie_powerup_solo_grab");
 
-    level.get_player_weapon_limit = ::custom_get_player_weapon_limit;
-
     set_zombie_var( "riotshield_hit_points", 1500 );
     if(isDefined(level.player_damage_callbacks[0]))
     {
@@ -129,24 +127,35 @@ onPlayerSpawned()
 	self thread sellPowerUp(); //spawn powerups 
 }
 
-// test_the_powerup()
-// {
-// 	self endon("death");
-// 	self endon("disconnected");
-// 	level endon("end_Game");
-// 	wait 10;
-// 	self iprintlnbold("^7Press ^1[{+smoke}] ^7to test the power up.");
-// 	for(;;)
-// 	{
-// 		if(self secondaryoffhandbuttonpressed())
-// 		{
-// 			iprintln("Perk size: " + self.perkarray.size);
-// 			specific_powerup_drop("random_perk", self.origin + VectorScale(AnglesToForward(self.angles), 70));
-// 			wait 1;
-// 		}
-// 		wait .05;
-// 	}
-// }
+test_the_powerup()
+{
+	self endon("death");
+	self endon("disconnected");
+	level endon("end_Game");
+	wait 10;
+	self iprintlnbold("^7Press ^1[{+smoke}] ^7to test the power up.");
+	
+	self.score += 100000;
+	
+	self.perkText = createFontString("Objective" , 1.2);
+	self.perkText setPoint("CENTER", "TOP", 300, "CENTER");
+
+	for(;;)
+	{
+		level.perk_purchase_limit = 50;
+		self.perkText setText("Perk limit: " + level.perk_purchase_limit + ". Perk size: " + self.perkarray.size + ".");
+
+		if(self secondaryoffhandbuttonpressed())
+		{
+			iprintln("Perk size: " + self.perkarray.size);
+			specific_powerup_drop("random_perk", self.origin + VectorScale(AnglesToForward(self.angles), 70));
+
+			
+			wait 1;
+		}
+		wait .05;
+	}
+}
 
 sellPowerUp()
 {
@@ -162,6 +171,7 @@ sellPowerUp()
 
 	for(;;)
 	{
+		level.perk_purchase_limit = 50;
 		totalCost = costPerPlayer * level.players.size;
 
         self.perkText setText( "^7Press ^1[{+smoke}] + ^1[{+activate}] ^7to buy random perk. Cost: " + totalCost);
@@ -404,6 +414,7 @@ perk_hud_create( perk, custom, print )
             {
                 shader = "menu_mp_weapons_1911";
             }
+            self thread start_mule();
             if(print)
 			{
 				self iprintln("^9Mule Kick");
@@ -529,55 +540,100 @@ perk_hud_create( perk, custom, print )
 
         //ORIGINAL PERKS
         case "specialty_armorvest_upgrade":
+			self iprintln("^9Jugger Nog");
+			wait 0.2;
+			self iprintln("This Perk sets health to 250 points.");
             shader = "specialty_juggernaut_zombies_pro";
             break;
         case "specialty_armorvest":
+			self iprintln("^9Jugger Nog");
+			wait 0.2;
+			self iprintln("This Perk sets health to 250 points.");
             shader = "specialty_juggernaut_zombies";
             break;
         case "specialty_quickrevive_upgrade":
+			self iprintln("^9Quick Revive");
+			wait 0.2;
+			self iprintln("This Perk allow players to revive others in a lower time.");
             shader = "specialty_quickrevive_zombies_pro";
             break;
         case "specialty_quickrevive":
+			self iprintln("^9Quick Revive");
+			wait 0.2;
+			self iprintln("This Perk allow players to revive others in a lower time.");
             shader = "specialty_quickrevive_zombies";
             break;
         case "specialty_fastreload_upgrade":
+			self iprintln("^9Speed Cola");
+			wait 0.2;
+			self iprintln("This Perk allow players to reload in a lower time.");
             shader = "specialty_fastreload_zombies_pro";
             break;
         case "specialty_fastreload":
+			self iprintln("^9Speed Cola");
+			wait 0.2;
+			self iprintln("This Perk allow players to reload in a lower time.");
             shader = "specialty_fastreload_zombies";
             break;
         case "specialty_rof_upgrade":
         case "specialty_rof":
+			self iprintln("^9Double Tap");
+			wait 0.2;
+			self iprintln("This Perk fires two bullets for the price of one.");
             shader = "specialty_doubletap_zombies";
             break;
         case "specialty_longersprint_upgrade":
         case "specialty_longersprint":
+			self iprintln("^9Stamin Up");
+			wait 0.2;
+			self iprintln("This Perk allow players to move faster.");
             shader = "specialty_marathon_zombies";
             break;
         case "specialty_flakjacket_upgrade":
         case "specialty_flakjacket":
+			self iprintln("^9PHD Flopper");
+			wait 0.2;
+			self iprintln("This Perk removes explosion and fall damage also player creates explosion when dive to prone.");
             shader = "specialty_divetonuke_zombies";
             break;
         case "specialty_deadshot_upgrade":
         case "specialty_deadshot":
+			self iprintln("^9Deadshot");
+			wait 0.2;
+			self iprintln("This Perk aims automatically enemys head instead of body.");
             shader = "specialty_ads_zombies";
             break;
         case "specialty_additionalprimaryweapon_upgrade":
         case "specialty_additionalprimaryweapon":
+			self iprintln("^9Mule Kick");
+			wait 0.2;
+			self iprintln("This Perk enables additional primary weapon slot for player, increases ads, weapon switching, grenade tossing and perk drinking.");
             shader = "specialty_additionalprimaryweapon_zombies";
             break;
         case "specialty_scavenger_upgrade":
-        case "specialty_scavenger": 
+        case "specialty_scavenger":
+			self iprintln("^9Tombstone");
+			wait 0.2;
+			self iprintln("This Perk saves players current loadout after player is downed");
             shader = "specialty_tombstone_zombies";
             break;
         case "specialty_finalstand":
         case "specialty_finalstand_upgrade": 
+			self iprintln("^9Whos Who");
+			wait 0.2;
+			self iprintln("This Perk offers players a second chance.");
             shader = "specialty_chugabud_zombies";
             break;
         case "specialty_nomotionsensor":
+			self iprintln("^9Vulture Aid");
+			wait 0.2;
+			self iprintln("This Perk enhances HUD.");
             shader = "specialty_vulture_zombies";
             break;
         case "specialty_grenadepulldeath":
+			self iprintln("^9Electric Cherry");
+			wait 0.2;
+			self iprintln("This Perk creates an electric shockwave around the player whenever they reload.");
             shader = "specialty_electric_cherry_zombie";
             break;
         default:
@@ -585,28 +641,6 @@ perk_hud_create( perk, custom, print )
             break;
     }
 
-    // if(custom && level.background_shader)
-    // {
-    //     hud2 = create_simple_hud( self );
-    //     hud2.foreground = 0;
-    //     hud2.sort = 1;
-    //     hud2.alpha = 1;
-    //     hud2.horzAlign = "user_left"; 
-    //     hud2.vertAlign = "user_center";
-    //     hud2.hidewheninmenu = 1;
-    //     hud2.x = 5.5 + (self.perkarray.size * 30);
-        
-    //     if(getdvar( "ui_zm_mapstartlocation" ) == "processing" || getdvar( "ui_zm_mapstartlocation" ) == "tomb" )
-    //         hud2.y = 116.5;
-    //     else
-    //         hud2.y = 146.5;
-
-    //     hud2 SetShader( shader, 24, 24 );
-    //     hud2 SetShader( background_shader, 24, 24 );
-    //     self.background_perk[ perk ] = hud2;
-    //     hud2.color = color;
-    // }
-	
     hud = create_simple_hud( self );
     hud.foreground = 1;
     hud.sort = 1;
@@ -796,6 +830,10 @@ give_random_perk()
         {
             perks[perks.size] = "specialty_flakjacket";
         }
+		if(!self hasPerk("specialty_longersprint"))
+        {
+            perks[perks.size] = "specialty_longersprint";
+        }
     }
     if(getdvar( "ui_zm_mapstartlocation" ) == "tomb" || getdvar( "ui_zm_mapstartlocation" ) == "processing" || getdvar( "ui_zm_mapstartlocation" ) == "rooftop" )
     {
@@ -936,24 +974,6 @@ damage_callback( einflictor, eattacker, idamage, idflags, smeansofdeath, sweapon
     return idamage;
 }
 
-custom_get_player_weapon_limit( player )
-{
-    weapon_limit = 3;
-    if( player hascustomperk("MULE") || self HasPerk("specialty_additionalprimaryweapon"))
-    {
-        self SetPerk("specialty_fastads");
-		self SetPerk("specialty_fastweaponswitch");
-		self Setperk("specialty_fasttoss");
-    }
-	else 
-	{
-		self UnsetPerk("specialty_fastads");
-		self UnsetPerk("specialty_fastweaponswitch");
-		self Unsetperk("specialty_fasttoss");
-	}
-    return weapon_limit;
-}
-
 start_er() 
 {
     level endon("end_game");
@@ -1005,6 +1025,29 @@ start_er()
         }
         wait .05;
     }
+}
+
+start_mule()
+{
+	self endon( "disconnect" );
+
+	for ( ;; )
+	{
+		self waittill_any("perk_acquired", "perk_lost");
+
+		if (self HasPerk("specialty_additionalprimaryweapon") || self hascustomperk("MULE"))
+		{
+			self SetPerk("specialty_fastads");
+			self SetPerk("specialty_fastweaponswitch");
+			self Setperk("specialty_fasttoss");
+		}
+		else
+		{
+			self UnsetPerk("specialty_fastads");
+			self UnsetPerk("specialty_fastweaponswitch");
+			self Unsetperk("specialty_fasttoss");
+		}
+	}
 }
 
 dying_wish_checker()

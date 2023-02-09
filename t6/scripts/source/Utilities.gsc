@@ -66,14 +66,6 @@ MaxHealthOnPlayerRevived()
 	}
 }
 
-/* Unlimited Perks */
-
-unlimitedPerks()
-{
-	self endon("disconnect");
-    level.perk_purchase_limit = 50;
-}
-
 /* Unlimited Sprint */
 
 unlimitedSprint()
