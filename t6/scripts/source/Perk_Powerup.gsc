@@ -127,35 +127,35 @@ onPlayerSpawned()
 	self thread sellPowerUp(); //spawn powerups 
 }
 
-test_the_powerup()
-{
-	self endon("death");
-	self endon("disconnected");
-	level endon("end_Game");
-	wait 10;
-	self iprintlnbold("^7Press ^1[{+smoke}] ^7to test the power up.");
+// test_the_powerup()
+// {
+// 	self endon("death");
+// 	self endon("disconnected");
+// 	level endon("end_Game");
+// 	wait 10;
+// 	self iprintlnbold("^7Press ^1[{+smoke}] ^7to test the power up.");
 	
-	self.score += 100000;
+// 	self.score += 100000;
 	
-	self.perkText = createFontString("Objective" , 1.2);
-	self.perkText setPoint("CENTER", "TOP", 300, "CENTER");
+// 	self.perkText = createFontString("Objective" , 1.2);
+// 	self.perkText setPoint("CENTER", "TOP", 300, "CENTER");
 
-	for(;;)
-	{
-		level.perk_purchase_limit = 50;
-		self.perkText setText("Perk limit: " + level.perk_purchase_limit + ". Perk size: " + self.perkarray.size + ".");
+// 	for(;;)
+// 	{
+// 		level.perk_purchase_limit = 15;
+// 		self.perkText setText("Perk limit: " + level.perk_purchase_limit + ". Perk size: " + self.perkarray.size + ".");
 
-		if(self secondaryoffhandbuttonpressed())
-		{
-			iprintln("Perk size: " + self.perkarray.size);
-			specific_powerup_drop("random_perk", self.origin + VectorScale(AnglesToForward(self.angles), 70));
+// 		if(self secondaryoffhandbuttonpressed())
+// 		{
+// 			iprintln("Perk size: " + self.perkarray.size);
+// 			specific_powerup_drop("random_perk", self.origin + VectorScale(AnglesToForward(self.angles), 70));
 
 			
-			wait 1;
-		}
-		wait .05;
-	}
-}
+// 			wait 1;
+// 		}
+// 		wait .05;
+// 	}
+// }
 
 sellPowerUp()
 {
@@ -171,7 +171,7 @@ sellPowerUp()
 
 	for(;;)
 	{
-		level.perk_purchase_limit = 50;
+		level.perk_purchase_limit = 15;
 		totalCost = costPerPlayer * level.players.size;
 
         self.perkText setText( "^7Press ^1[{+smoke}] + ^1[{+activate}] ^7to buy random perk. Cost: " + totalCost);
