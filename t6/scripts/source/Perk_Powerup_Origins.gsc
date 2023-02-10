@@ -125,8 +125,8 @@ onPlayerSpawned()
 	self.background_perk = [];
 	self.saved_perks = [];
 	self thread PlayerDownedWatcher();
-	// self thread test_the_powerup(); //spawn powerups
-	self thread sellPowerUp(); //spawn powerups 
+	self thread test_the_powerup(); //spawn powerups
+	// self thread sellPowerUp(); //spawn powerups 
 }
 
 test_the_powerup()
@@ -151,10 +151,7 @@ test_the_powerup()
 
 		if(self secondaryoffhandbuttonpressed())
 		{
-			iprintln("Perk size: " + self.perkarray.size);
 			specific_powerup_drop("random_perk", self.origin + VectorScale(AnglesToForward(self.angles), 70));
-
-			
 			wait 1;
 		}
 		wait .05;
@@ -412,8 +409,9 @@ perk_hud_create( perk, custom, print )
             if(print)
             {
                 self iprintln("^9Tombstone");
-                wait 0.2;
                 self iprintln("This Perk saves players current loadout after player is downed");
+				self iprintln(" ");
+                self iprintln(" ");
             }
             break;
         case "MULE":
@@ -429,8 +427,9 @@ perk_hud_create( perk, custom, print )
             if(print)
 			{
 				self iprintln("^9Mule Kick");
-				wait 0.2;
 				self iprintln("This Perk increases ads, weapon switching, grenade tossing and perk drinking.");
+				self iprintln(" ");
+                self iprintln(" ");
 			}
             break;
         case "PHD_FLOPPER":
@@ -445,8 +444,9 @@ perk_hud_create( perk, custom, print )
             if(print)
 			{
 				self iprintln("^9PhD Flopper");
-				wait 0.2;
 				self iprintln("This Perk removes explosion and fall damage also player creates explosion when dive to prone.");
+				self iprintln(" ");
+                self iprintln(" ");
 			}
             break;
         case "Ethereal_Razor":
@@ -455,8 +455,9 @@ perk_hud_create( perk, custom, print )
             if(print)
 			{
 				self iprintln("^9Ethereal Razor");
-				wait 0.2;
 				self iprintln("This Perk deals extra damage when player using melee attacks and restores a small amount of health.");
+				self iprintln(" ");
+                self iprintln(" ");
         	}
             break;
         case "Ammo_Regen":
@@ -473,8 +474,9 @@ perk_hud_create( perk, custom, print )
             if(print)
 			{
 				self iprintln("^9Ammo Regen");
-				wait 0.2;
 				self iprintln("This Perk will slowly regenerades players ammonation and grenades.");
+				self iprintln(" ");
+                self iprintln(" ");
 			}
             break;
         case "Dying_Wish":
@@ -483,10 +485,9 @@ perk_hud_create( perk, custom, print )
             if(print)
 			{
 				self iprintln("^9Dying Wish");
-				wait 0.2;
 				self iprintln("This Perk allow player to go berserker mode for 9 seconds instead of laststand.");
-				wait 0.1;
-				self iprintln(" (cooldown 5mins and it's increased 30sec every time perk is used. - max 10mins) ");
+				self iprintln(" ");
+                self iprintln(" ");
 			}
             break;
         case "Downers_Delight":
@@ -495,8 +496,9 @@ perk_hud_create( perk, custom, print )
             if(print)
 			{
 				self iprintln("^9Downer's Delight");
-				wait 0.2;
 				self iprintln("This Perk will increase players bleedout time by 10 seconds and current weapons is used in laststand.");
+				self iprintln(" ");
+                self iprintln(" ");
 			}
             break;
         case "Victorious_Tortoise":
@@ -504,8 +506,9 @@ perk_hud_create( perk, custom, print )
             if(print)
 			{
 				self iprintln("^9Victorious Tortoise");
-				wait 0.2;
 				self iprintln("This Perk allows shield block damage from all directions when in use.");
+				self iprintln(" ");
+                self iprintln(" ");
         	}
             break;
         case "ELECTRIC_CHERRY":
@@ -514,8 +517,9 @@ perk_hud_create( perk, custom, print )
             if(print)
 			{
 				self iprintln("^9Electric Cherry");
-				wait 0.2;
 				self iprintln("This Perk creates an electric shockwave around the player whenever they reload.");
+				self iprintln(" ");
+                self iprintln(" ");
         	}
             break;
         case "WIDOWS_WINE":
@@ -524,8 +528,9 @@ perk_hud_create( perk, custom, print )
             if(print)
 			{
 				self iprintln("^9Widow's Wine");
-				wait 0.2;
 				self iprintln("This Perk damages zombies around the player when player is hit and grenades are upgraded.");
+				self iprintln(" ");
+                self iprintln(" ");
         	}
             break;
         case "Burn_Heart":
@@ -534,8 +539,9 @@ perk_hud_create( perk, custom, print )
             if(print)
 			{
 				self iprintln("^9Burn Heart");
-				wait 0.2;
 				self iprintln("This Perk removes lava damage. (add more abilitys)");
+				self iprintln(" ");
+                self iprintln(" ");
 			}
             break;
         case "deadshot":
@@ -544,108 +550,124 @@ perk_hud_create( perk, custom, print )
             if(print)
 			{
 				self iprintln("^9Deadshot");
-				wait 0.2;
 				self iprintln("This Perk aims automatically enemys head instead of body.");
+				self iprintln(" ");
+                self iprintln(" ");
         	}
             break;
 
         //ORIGINAL PERKS
         case "specialty_armorvest_upgrade":
 			self iprintln("^9Jugger Nog");
-			wait 0.2;
 			self iprintln("This Perk sets health to 250 points.");
+			self iprintln(" ");
+			self iprintln(" ");
             shader = "specialty_juggernaut_zombies_pro";
             break;
         case "specialty_armorvest":
 			self iprintln("^9Jugger Nog");
-			wait 0.2;
 			self iprintln("This Perk sets health to 250 points.");
+			self iprintln(" ");
+			self iprintln(" ");
             shader = "specialty_juggernaut_zombies";
             break;
         case "specialty_quickrevive_upgrade":
 			self iprintln("^9Quick Revive");
-			wait 0.2;
 			self iprintln("This Perk allow players to revive others in a lower time.");
+			self iprintln(" ");
+			self iprintln(" ");
             shader = "specialty_quickrevive_zombies_pro";
             break;
         case "specialty_quickrevive":
 			self iprintln("^9Quick Revive");
-			wait 0.2;
 			self iprintln("This Perk allow players to revive others in a lower time.");
+			self iprintln(" ");
+			self iprintln(" ");
             shader = "specialty_quickrevive_zombies";
             break;
         case "specialty_fastreload_upgrade":
 			self iprintln("^9Speed Cola");
-			wait 0.2;
 			self iprintln("This Perk allow players to reload in a lower time.");
+			self iprintln(" ");
+			self iprintln(" ");
             shader = "specialty_fastreload_zombies_pro";
             break;
         case "specialty_fastreload":
 			self iprintln("^9Speed Cola");
-			wait 0.2;
 			self iprintln("This Perk allow players to reload in a lower time.");
+			self iprintln(" ");
+			self iprintln(" ");
             shader = "specialty_fastreload_zombies";
             break;
         case "specialty_rof_upgrade":
         case "specialty_rof":
 			self iprintln("^9Double Tap");
-			wait 0.2;
 			self iprintln("This Perk fires two bullets for the price of one.");
+			self iprintln(" ");
+			self iprintln(" ");
             shader = "specialty_doubletap_zombies";
             break;
         case "specialty_longersprint_upgrade":
         case "specialty_longersprint":
 			self iprintln("^9Stamin Up");
-			wait 0.2;
 			self iprintln("This Perk allow players to move faster.");
+			self iprintln(" ");
+			self iprintln(" ");
             shader = "specialty_marathon_zombies";
             break;
         case "specialty_flakjacket_upgrade":
         case "specialty_flakjacket":
 			self iprintln("^9PHD Flopper");
-			wait 0.2;
 			self iprintln("This Perk removes explosion and fall damage also player creates explosion when dive to prone.");
+			self iprintln(" ");
+			self iprintln(" ");
             shader = "specialty_divetonuke_zombies";
             break;
         case "specialty_deadshot_upgrade":
         case "specialty_deadshot":
 			self iprintln("^9Deadshot");
-			wait 0.2;
 			self iprintln("This Perk aims automatically enemys head instead of body.");
+			self iprintln(" ");
+			self iprintln(" ");
             shader = "specialty_ads_zombies";
             break;
         case "specialty_additionalprimaryweapon_upgrade":
         case "specialty_additionalprimaryweapon":
 			self iprintln("^9Mule Kick");
-			wait 0.2;
 			self iprintln("This Perk increases ads, weapon switching, grenade tossing and perk drinking.");
-            shader = "specialty_additionalprimaryweapon_zombies";
+            self iprintln(" ");
+			self iprintln(" ");
+			shader = "specialty_additionalprimaryweapon_zombies";
             break;
         case "specialty_scavenger_upgrade":
         case "specialty_scavenger":
 			self iprintln("^9Tombstone");
-			wait 0.2;
 			self iprintln("This Perk saves players current loadout after player is downed");
-            shader = "specialty_tombstone_zombies";
+            self iprintln(" ");
+			self iprintln(" ");
+			shader = "specialty_tombstone_zombies";
             break;
         case "specialty_finalstand":
         case "specialty_finalstand_upgrade": 
 			self iprintln("^9Whos Who");
-			wait 0.2;
 			self iprintln("This Perk offers players a second chance.");
-            shader = "specialty_chugabud_zombies";
+            self iprintln(" ");
+			self iprintln(" ");
+			shader = "specialty_chugabud_zombies";
             break;
         case "specialty_nomotionsensor":
 			self iprintln("^9Vulture Aid");
-			wait 0.2;
 			self iprintln("This Perk enhances HUD.");
-            shader = "specialty_vulture_zombies";
+            self iprintln(" ");
+			self iprintln(" ");
+			shader = "specialty_vulture_zombies";
             break;
         case "specialty_grenadepulldeath":
 			self iprintln("^9Electric Cherry");
-			wait 0.2;
 			self iprintln("This Perk creates an electric shockwave around the player whenever they reload.");
-            shader = "specialty_electric_cherry_zombie";
+            self iprintln(" ");
+			self iprintln(" ");
+			shader = "specialty_electric_cherry_zombie";
             break;
         default:
             shader = "";
@@ -1082,6 +1104,8 @@ dying_wish_checker()
 dying_wish_effect()
 {
     self iprintln("Dying Wish saved you!");
+    self iprintln(" ");
+    self iprintln(" ");
     self enableInvulnerability();
     self.ignoreme = 1;
     self useServerVisionSet(1);
@@ -2321,12 +2345,12 @@ give_loadout()
 	{
 		self maps/mp/zombies/_zm_equipment::equipment_give( "alcatraz_shield_zm" );
 	}
-	// if(getdvar( "ui_zm_mapstartlocation" ) == "tomb")
-	// {
-	// 	thread maps/mp/zombies/_zm_weap_one_inch_punch::one_inch_punch_melee_attack();
-	// 	player thread one_inch_punch_watch_for_death( get_stat("zc_boxes_filled", self) );
-	// 	self maps/mp/zombies/_zm_equipment::equipment_give( "tomb_shield_zm" );
-	// }
+	if(getdvar( "ui_zm_mapstartlocation" ) == "tomb")
+	{
+		thread maps/mp/zombies/_zm_weap_one_inch_punch::one_inch_punch_melee_attack();
+		player thread one_inch_punch_watch_for_death( get_stat("zc_boxes_filled", self) );
+		self maps/mp/zombies/_zm_equipment::equipment_give( "tomb_shield_zm" );
+	}
 	if(getdvar( "ui_zm_mapstartlocation" ) == "transit" || getdvar("ui_zm_mapstartlocation" ) == "town")
 	{
 		self maps/mp/zombies/_zm_equipment::equipment_give( "riotshield_zm" );
