@@ -123,39 +123,39 @@ onPlayerSpawned()
 	self.background_perk = [];
 	self.saved_perks = [];
 	self thread PlayerDownedWatcher();
-	// self thread test_the_powerup(); //spawn powerups 
-	self thread sellPowerUp(); //spawn powerups 
+	self thread test_the_powerup(); //spawn powerups 
+	// self thread sellPowerUp(); //spawn powerups 
 }
 
-// test_the_powerup()
-// {
-// 	self endon("death");
-// 	self endon("disconnected");
-// 	level endon("end_Game");
-// 	wait 10;
-// 	self iprintlnbold("^7Press ^1[{+smoke}] ^7to test the power up.");
+test_the_powerup()
+{
+	self endon("death");
+	self endon("disconnected");
+	level endon("end_Game");
+	wait 10;
+	self iprintlnbold("^7Press ^1[{+smoke}] ^7to test the power up.");
 	
-// 	self.score += 100000;
+	self.score += 100000;
 	
-// 	self.perkText = createFontString("Objective" , 1.2);
-// 	self.perkText setPoint("CENTER", "TOP", 300, "CENTER");
+	self.perkText = createFontString("Objective" , 1.2);
+	self.perkText setPoint("CENTER", "TOP", 300, "CENTER");
 
-// 	for(;;)
-// 	{
-// 		level.perk_purchase_limit = 15;
-// 		self.perkText setText("Perk limit: " + level.perk_purchase_limit + ". Perk size: " + self.perkarray.size + ".");
+	for(;;)
+	{
+		level.perk_purchase_limit = 15;
+		self.perkText setText("Perk limit: " + level.perk_purchase_limit + ". Perk size: " + self.perkarray.size + ".");
 
-// 		if(self secondaryoffhandbuttonpressed())
-// 		{
-// 			iprintln("Perk size: " + self.perkarray.size);
-// 			specific_powerup_drop("random_perk", self.origin + VectorScale(AnglesToForward(self.angles), 70));
+		if(self secondaryoffhandbuttonpressed())
+		{
+			iprintln("Perk size: " + self.perkarray.size);
+			specific_powerup_drop("random_perk", self.origin + VectorScale(AnglesToForward(self.angles), 70));
 
 			
-// 			wait 1;
-// 		}
-// 		wait .05;
-// 	}
-// }
+			wait 1;
+		}
+		wait .05;
+	}
+}
 
 sellPowerUp()
 {
@@ -163,8 +163,8 @@ sellPowerUp()
 	self endon("disconnected");
 	level endon("end_Game");
 
-	costPerPlayer = 2000;
-	totalCost = 2000;
+	totalCost = 1500;
+	costPerPlayer = 1500;
 
 	self.perkText = createFontString("Objective" , 1.2);
     self.perkText setPoint("CENTER", "TOP", 300, "CENTER");
@@ -257,14 +257,14 @@ TrackPerkPowerup()
 
 func_should_drop_limited()
 {
-    // if (level.round_number > 10 && isDefined( level.roundsplayed ) && level.roundsplayed < 1 )
-    // {
-    //     return 0;
-    // }
-    // if (level.round_number < 10 && isDefined( level.roundsplayed ) && level.roundsplayed < 2 )
-    // {
-    //     return 0;
-    // }
+    if (level.round_number > 10 && isDefined( level.roundsplayed ) && level.roundsplayed < 1 )
+    {
+        return 0;
+    }
+    if (level.round_number < 10 && isDefined( level.roundsplayed ) && level.roundsplayed < 2 )
+    {
+        return 0;
+    }
     return 1;
 }
 
@@ -916,45 +916,45 @@ damage_callback( einflictor, eattacker, idamage, idflags, smeansofdeath, sweapon
 	}
     if( isDefined( eAttacker.is_zombie ) && eAttacker.is_zombie && self hascustomperk("Victorious_Tortoise") )
     {
-        if(self getcurrentweapon() == "riotshield_zm" || self getcurrentweapon() == "alcatraz_shield_zm" || self getcurrentweapon() == "tomb_shield_zm")
-        {
-            shield_hp = 1500;
-            if ( !isDefined( self.shielddamagetaken ) )
-            {
-                self.shielddamagetaken = 0;
-            }
-            self.shielddamagetaken += idamage;
-            if ( self.shielddamagetaken >= shield_hp )
-            {
-                if ( isDefined( self.stub ) )
-                {
-                    thread maps/mp/zombies/_zm_unitrigger::unregister_unitrigger( self.stub );
-                }
-                playsoundatposition( "wpn_riotshield_zm_destroy", self.origin );
-                self notify("destroy_riotshield");
-                if(getdvar( "ui_zm_mapstartlocation" ) == "prison")
-                {
-                    self maps/mp/zombies/_zm_equipment::equipment_take( "alcatraz_shield_zm" );
-                }
-                if(getdvar( "ui_zm_mapstartlocation" ) == "tomb")
-                {
-                    self maps/mp/zombies/_zm_equipment::equipment_take( "tomb_shield_zm" );
-                }
-                if(getdvar( "ui_zm_mapstartlocation" ) == "transit" || getdvar("ui_zm_mapstartlocation" ) == "town")
-                {
-                    self maps/mp/zombies/_zm_equipment::equipment_take( "riotshield_zm" );
-                }
-                maps/mp/zombies/_zm_equipment::equipment_disappear_fx( self.origin, level._riotshield_dissapear_fx );
-                self enableInvulnerability();
-                wait 1;
-                self disableInvulnerability();
-            }
-            else
-            {
-                self deployed_set_shield_health( self.shielddamagetaken, damagemax );
-            }
-            return 0;
-        }
+        // if(self getcurrentweapon() == "riotshield_zm" || self getcurrentweapon() == "alcatraz_shield_zm" || self getcurrentweapon() == "tomb_shield_zm")
+        // {
+        //     shield_hp = 1500;
+        //     if ( !isDefined( self.shielddamagetaken ) )
+        //     {
+        //         self.shielddamagetaken = 0;
+        //     }
+        //     self.shielddamagetaken += idamage;
+        //     if ( self.shielddamagetaken >= shield_hp )
+        //     {
+        //         if ( isDefined( self.stub ) )
+        //         {
+        //             thread maps/mp/zombies/_zm_unitrigger::unregister_unitrigger( self.stub );
+        //         }
+        //         playsoundatposition( "wpn_riotshield_zm_destroy", self.origin );
+        //         self notify("destroy_riotshield");
+        //         if(getdvar( "ui_zm_mapstartlocation" ) == "prison")
+        //         {
+        //             self maps/mp/zombies/_zm_equipment::equipment_take( "alcatraz_shield_zm" );
+        //         }
+        //         if(getdvar( "ui_zm_mapstartlocation" ) == "tomb")
+        //         {
+        //             self maps/mp/zombies/_zm_equipment::equipment_take( "tomb_shield_zm" );
+        //         }
+        //         if(getdvar( "ui_zm_mapstartlocation" ) == "transit" || getdvar("ui_zm_mapstartlocation" ) == "town")
+        //         {
+        //             self maps/mp/zombies/_zm_equipment::equipment_take( "riotshield_zm" );
+        //         }
+        //         maps/mp/zombies/_zm_equipment::equipment_disappear_fx( self.origin, level._riotshield_dissapear_fx );
+        //         self enableInvulnerability();
+        //         wait 1;
+        //         self disableInvulnerability();
+        //     }
+        //     else
+        //     {
+        //         self deployed_set_shield_health( self.shielddamagetaken, damagemax );
+        //     }
+        //     return 0;
+        // }
     }
 
     if(idamage > self.health && !self.dying_wish_on_cooldown && self hascustomperk("Dying_Wish") )
@@ -1689,6 +1689,26 @@ custom_tombstone_give()
 			self setweaponammoclip( "cymbal_monkey_zm", dc.zombie_cymbal_monkey_count );
 		}
 	}
+
+	if(getdvar( "ui_zm_mapstartlocation" ) == "tomb" && get_stat("zc_boxes_filled", self).b_reward_claimed)
+	{
+		get_stat("zc_boxes_filled", self).b_reward_claimed = 0;
+	}
+}
+
+get_stat( str_stat, player )
+{
+	s_parent_stat = level._challenges.a_stats[ str_stat ];
+
+	if ( s_parent_stat.b_team )
+	{
+		s_stat = level._challenges.s_team.a_stats[ str_stat ];
+	}
+	else
+	{
+		s_stat = level._challenges.a_players[ player.characterindex ].a_stats[ str_stat ];
+	}
+	return s_stat;
 }
 
 custom_afterlife_save_loadout()
