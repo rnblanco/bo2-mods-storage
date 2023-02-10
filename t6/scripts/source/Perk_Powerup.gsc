@@ -125,40 +125,7 @@ onPlayerSpawned()
 	self.background_perk = [];
 	self.saved_perks = [];
 	self thread PlayerDownedWatcher();
-	// self thread test_the_powerup(); //spawn powerups
-	self thread sellPowerUp(); //spawn powerups 
-}
-
-test_the_powerup()
-{
-	self endon("death");
-	self endon("disconnected");
-	level endon("end_Game");
-	wait 10;
-	self iprintlnbold("^7Press ^1[{+smoke}] ^7to test the power up.");
-	
-	self.score += 100000;
-	
-	self.perkText = createFontString("Objective" , 1.2);
-	self.perkText setPoint("CENTER", "TOP", 300, "CENTER");
-
-	// bot = addtestclient();
-
-	for(;;)
-	{
-		level.perk_purchase_limit = 15;
-		self.perkText setText("Perk limit: " + level.perk_purchase_limit + ". Perk size: " + self.perkarray.size + ".");
-
-		if(self secondaryoffhandbuttonpressed())
-		{
-			iprintln("Perk size: " + self.perkarray.size);
-			specific_powerup_drop("random_perk", self.origin + VectorScale(AnglesToForward(self.angles), 70));
-
-			
-			wait 1;
-		}
-		wait .05;
-	}
+		self thread sellPowerUp(); //spawn powerups 
 }
 
 sellPowerUp()
@@ -173,19 +140,35 @@ sellPowerUp()
 	self.perkText = createFontString("Objective" , 1.2);
     self.perkText setPoint("CENTER", "TOP", 300, "CENTER");
 
+	// bot = addtestclient();
+
 	for(;;)
 	{
-		level.perk_purchase_limit = 15;
-		totalCost = costPerPlayer * level.players.size;
-
-        self.perkText setText( "^7Press ^1[{+smoke}] + ^1[{+activate}] ^7to buy random perk. Cost: " + totalCost);
-
-		if(self secondaryoffhandbuttonpressed() && self usebuttonpressed() && self.score >= totalCost)
+		if ( getDvarInt( "zombie_cheat" ) > 0 )
 		{
-			self.score -= totalCost;
-			specific_powerup_drop("random_perk", self.origin + VectorScale(AnglesToForward(self.angles), 70));
-			wait 1;
+			level.perk_purchase_limit = 15;
+			self.perkText setText("^7Press ^1[{+smoke}] ^7to test the power up.");
+
+			if(self secondaryoffhandbuttonpressed())
+			{
+				specific_powerup_drop("random_perk", self.origin + VectorScale(AnglesToForward(self.angles), 70));
+				wait 1;
+			}
 		}
+		else 
+		{
+			level.perk_purchase_limit = 15;
+			totalCost = costPerPlayer * level.players.size;
+        	self.perkText setText( "^7Press ^1[{+smoke}] + ^1[{+activate}] ^7to buy random perk. Cost: " + totalCost);
+
+			if(self secondaryoffhandbuttonpressed() && self usebuttonpressed() && self.score >= totalCost)
+			{
+				self.score -= totalCost;
+				specific_powerup_drop("random_perk", self.origin + VectorScale(AnglesToForward(self.angles), 70));
+				wait 1;
+			}
+		}
+
 		wait .05;
 	}
 }
