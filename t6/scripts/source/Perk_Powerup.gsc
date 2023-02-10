@@ -26,6 +26,8 @@
 #include maps\mp\gametypes_zm\_hud_util;
 #include maps\mp\gametypes_zm\_hud_message;
 
+#include maps/mp/zm_tomb_challenges;
+
 init()
 {
 	level.background_shader = getdvarintdefault("enable_background", 1);
@@ -36,7 +38,7 @@ init()
     include_zombie_powerup("random_perk");
     add_zombie_powerup("random_perk", "t6_wpn_zmb_perk_bottle_sleight_world", &"ZOMBIE_POWERUP_RANDOM_PERK", ::func_should_always_drop, 0, 0, 0); 
     powerup_set_can_pick_up_in_last_stand("random_perk", 1);
-    precacheshaders = array("menu_mp_weapons_lsat","menu_mp_weapons_1911", "menu_mp_weapons_kard","menu_mp_weapons_hamr","menu_mp_weapons_five_seven","menu_zm_cac_grad_stretch","talkingicon","menu_mp_weapons_dsr1","killiconheadshot","hud_icon_sticky_grenade","faction_cdc","specialty_chugabud_zombies","specialty_electric_cherry_zombie","specialty_additionalprimaryweapon_zombies","menu_mp_weapons_mp5","specialty_divetonuke_zombies","menu_mp_weapons_m82a","menu_mp_weapons_galil","menu_mp_weapons_fal","menu_mp_weapons_ak74u","zombies_rank_5","menu_lobby_icon_facebook","hud_icon_colt","menu_mp_weapons_870mcs","damage_feedback","menu_lobby_icon_twitter","specialty_doubletap_zombies");
+    precacheshaders = array("menu_mp_weapons_lsat","menu_mp_weapons_1911", "menu_mp_weapons_kard","menu_mp_weapons_hamr","menu_mp_weapons_five_seven","menu_mp_weapons_tar21","talkingicon","menu_mp_weapons_dsr1","killiconheadshot","hud_icon_sticky_grenade","faction_cdc","specialty_chugabud_zombies","specialty_electric_cherry_zombie","specialty_additionalprimaryweapon_zombies","menu_mp_weapons_mp5","specialty_divetonuke_zombies","menu_mp_weapons_m82a","menu_mp_weapons_galil","menu_mp_weapons_fal","menu_mp_weapons_ak74u","zombies_rank_5","menu_lobby_icon_facebook","hud_icon_colt","menu_mp_weapons_870mcs","damage_feedback","menu_lobby_icon_twitter","specialty_doubletap_zombies");
     foreach(shader in precacheshaders)
     {
         precacheshader(shader);
@@ -123,9 +125,19 @@ onPlayerSpawned()
 	self.background_perk = [];
 	self.saved_perks = [];
 	self thread PlayerDownedWatcher();
-	self thread test_the_powerup(); //spawn powerups 
+	self thread test_the_powerup(); //spawn powerups
+	// self thread test_punches(); //spawn punches
 	// self thread sellPowerUp(); //spawn powerups 
 }
+
+// test_punches()
+// {
+// 	if(getdvar( "ui_zm_mapstartlocation" ) == "tomb")
+// 	{
+// 		thread maps/mp/zombies/_zm_weap_one_inch_punch::one_inch_punch_melee_attack();
+// 		player thread one_inch_punch_watch_for_death( get_stat("zc_boxes_filled", self) );
+// 	}
+// }
 
 test_the_powerup()
 {
@@ -397,7 +409,7 @@ perk_hud_create( perk, custom, print )
         case "Tombstone":
 			color1 = (1, 1, 1);
 			background_shader = "specialty_doubletap_zombies";
-			shader = "menu_zm_cac_grad_stretch";
+			shader = "menu_mp_weapons_tar21";
             if(print)
             {
                 self iprintln("^9Tombstone");
@@ -1633,14 +1645,7 @@ custom_tombstone_give()
 			i++;
 		}
 	}
-	if ( isDefined( dc.hasriotshield ) && dc.hasriotshield )
-	{
-		self maps/mp/zombies/_zm_equipment::equipment_give( "riotshield_zm" );
-		if ( isDefined( self.player_shield_reset_health ) )
-		{
-			self [[ self.player_shield_reset_health ]]();
-		}
-	}
+
 	dc restore_weapons_for_tombstone( self );
 	if ( isDefined( dc.hasclaymore ) && dc.hasclaymore && !self hasweapon( "claymore_zm" ) )
 	{
@@ -1649,11 +1654,13 @@ custom_tombstone_give()
 		self setactionslot( 4, "weapon", "claymore_zm" );
 		self setweaponammoclip( "claymore_zm", dc.claymoreclip );
 	}
+	
 	if ( isDefined( dc.hasemp ) && dc.hasemp )
 	{
 		self giveweapon( "emp_grenade_zm" );
 		self setweaponammoclip( "emp_grenade_zm", dc.empclip );
 	}
+
     if(isdefined(self.saved_perks) && self.saved_perks.size > 0)
     {
         for(i = 0; i < self.saved_perks.size; i++)
@@ -1690,9 +1697,26 @@ custom_tombstone_give()
 		}
 	}
 
-	if(getdvar( "ui_zm_mapstartlocation" ) == "tomb" && get_stat("zc_boxes_filled", self).b_reward_claimed)
+	if(getdvar( "ui_zm_mapstartlocation" ) == "prison")
 	{
-		get_stat("zc_boxes_filled", self).b_reward_claimed = 0;
+		self maps/mp/zombies/_zm_equipment::equipment_give( "alcatraz_shield_zm" );
+	}
+	if(getdvar( "ui_zm_mapstartlocation" ) == "tomb")
+	{
+		self maps/mp/zombies/_zm_equipment::equipment_give( "tomb_shield_zm" );
+		if(get_stat("zc_boxes_filled", self).b_reward_claimed)
+		{
+			thread maps/mp/zombies/_zm_weap_one_inch_punch::one_inch_punch_melee_attack();
+			player thread one_inch_punch_watch_for_death( get_stat("zc_boxes_filled", self) );
+		}
+	}
+	if(getdvar( "ui_zm_mapstartlocation" ) == "transit" || getdvar("ui_zm_mapstartlocation" ) == "town")
+	{
+		self maps/mp/zombies/_zm_equipment::equipment_give( "riotshield_zm" );
+	}
+	if ( isDefined( self.player_shield_reset_health ) )
+	{
+		self [[ self.player_shield_reset_health ]]();
 	}
 }
 
@@ -2371,6 +2395,25 @@ give_loadout()
 			self giveweapon( self get_player_lethal_grenade() );
 
 		self setweaponammoclip( self get_player_lethal_grenade(), loadout.grenade + curgrenadecount );
+	}
+
+	if(getdvar( "ui_zm_mapstartlocation" ) == "prison")
+	{
+		self maps/mp/zombies/_zm_equipment::equipment_give( "alcatraz_shield_zm" );
+	}
+	if(getdvar( "ui_zm_mapstartlocation" ) == "tomb")
+	{
+		thread maps/mp/zombies/_zm_weap_one_inch_punch::one_inch_punch_melee_attack();
+		player thread one_inch_punch_watch_for_death( get_stat("zc_boxes_filled", self) );
+		self maps/mp/zombies/_zm_equipment::equipment_give( "tomb_shield_zm" );
+	}
+	if(getdvar( "ui_zm_mapstartlocation" ) == "transit" || getdvar("ui_zm_mapstartlocation" ) == "town")
+	{
+		self maps/mp/zombies/_zm_equipment::equipment_give( "riotshield_zm" );
+	}
+	if ( isDefined( self.player_shield_reset_health ) )
+	{
+		self [[ self.player_shield_reset_health ]]();
 	}
 }
 
